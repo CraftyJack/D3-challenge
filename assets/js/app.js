@@ -124,14 +124,18 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     circlesGroup.on("mouseover", function(data) {
       toolTip.show(data);
       d3.select(this)
+        .classed("stateCircle", false)
         .transition()
         .duration(750)
-        .attr("r", 20);
+        .attr("r", 20)
+        .attr("fill", "#89bdd3")
+        .attr("stroke", "black");
     })
       // onmouseout event
       .on("mouseout", function(data, index) {
         toolTip.hide(data);
         d3.select(this)
+          .classed("stateCircle", true)
           .transition()
           .duration(750)
           .attr("r", 8);
@@ -184,7 +188,8 @@ d3.csv("assets/data/data.csv").then(function(povertyData, err) {
       .attr("cx", d => xLinearScale(d[chosenXAxis]))
       .attr("cy", d => yLinearScale(d[chosenYAxis]))
       .attr("r", 8)
-      .classed("stateCircle", true);
+      .classed("stateCircle", true)
+      ;
     
     // circle text
   
