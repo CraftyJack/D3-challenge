@@ -5,8 +5,8 @@ var svgWidth = 800;
 var margin = {
   top: 20,
   right: 40,
-  bottom: 120,
-  left: 120
+  bottom: 140,
+  left: 140
 };
 
 var width = svgWidth - margin.left - margin.right;
@@ -89,37 +89,43 @@ function renderCircles(circlesGroup, newXScale, newYScale, chosenXAxis, chosenYA
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
     var xLabel;  
-        if (chosenXAxis === "income") {
-          xLabel = "Income: ";
-        }
-        else if (chosenXAxis === "age") {
-          xLabel = "Age: ";
-        }
-        else if (chosenXAxis === "healthcare") {
-          xLabel = "Healthcare: ";
-        }
-        else if (chosenXAxis === "obesity") {
-          xLabel = "Obesity: ";
-        }
-        else {
-        xLabel = "Smokes: ";
+      if (chosenXAxis === "income") {
+        xLabel = "Household Income (Median): ";
+      }
+      else if (chosenXAxis === "age") {
+        xLabel = "Age (Median): ";
+      }
+      else if (chosenXAxis === "healthcare") {
+        xLabel = "Lacks Healthcare (%): ";
+      }
+      else if (chosenXAxis === "obesity") {
+        xLabel = "Obesity (%): ";
+      }
+      else if (chosenXAxis === "poverty") {
+        xLabel = "In Poverty (%): ";
+      }
+      else {
+        xLabel = "Smokes (%): ";
     }
 
     var yLabel;  
-        if (chosenYAxis === "poverty") {
-          yLabel = "Poverty: ";
-        }
-        else if (chosenYAxis === "age") {
-          yLabel = "Age: ";
-        }
-        else if (chosenYAxis === "healthcare") {
-          yLabel = "Healthcare: ";
-        }
-        else if (chosenYAxis === "obesity") {
-          yLabel = "Obesity: ";
-        }
-        else {
-        yLabel = "Smokes: ";
+      if (chosenYAxis === "income") {
+        yLabel = "Household Income (Median): ";
+      }
+      else if (chosenYAxis === "age") {
+        yLabel = "Age (Median): ";
+      }
+      else if (chosenYAxis === "healthcare") {
+        yLabel = "Lacks Healthcare (%): ";
+      }
+      else if (chosenYAxis === "obesity") {
+        yLabel = "Obesity (%): ";
+      }
+      else if (chosenYAxis === "poverty") {
+        yLabel = "In Poverty (%): ";
+      }
+      else {
+        yLabel = "Smokes (%): ";
     }
   
     var toolTip = d3.tip()
@@ -189,17 +195,10 @@ d3.csv("assets/data/data.csv").then(function(povertyData, err) {
       .attr("fill", "blue")
       .attr("opacity", ".5");
     
-    // var circleText = circlesGroup.selectAll("circles")
-    //   .data(povertyData)
-    //   .enter()
-    //   .attr("x", d => xLinearScale(d[chosenXAxis]))
-    //   .attr("y", d => yLinearScale(d[chosenYAxis]))
-    //   .attr("text-anchor", "middle")
-    //   .text(d => d.abbr)
-    //   .style("font-family", "Helvetica Neue, Helvetica, Arial, san-serif")
-    //   .attr("font-size", "10px")
-    //   .style("font-weight", "bold")
-    //   .attr("fill", "black");
+    // A quick word about the axes:
+    // I intentionally chose to include all of the data on both axes, rather than dividing age/money and health.
+    // I chose this because it allows for some interesting observations, like high rates of poverty in
+    // places with high median income (income inequality?), and the tight correlation between obesity and smoking.
   
     // Create group for x-axis labels
     var xlabelsGroup = chartGroup.append("g")
@@ -210,35 +209,42 @@ d3.csv("assets/data/data.csv").then(function(povertyData, err) {
       .attr("y", 20)
       .attr("value", "income") // value to grab for event listener
       .classed("active", true)
-      .text("Median Income in Dollars");
+      .text("Household Income (Median)");
+    
+    var xpovertyLabel = xlabelsGroup.append("text")
+      .attr("x", 0)
+      .attr("y", 40)
+      .attr("value", "poverty") // value to grab for event listener
+      .classed("inactive", true)
+      .text("In Poverty (%)");
   
     var xobesityLabel = xlabelsGroup.append("text")
       .attr("x", 0)
-      .attr("y", 40)
+      .attr("y", 60)
       .attr("value", "obesity") // value to grab for event listener
       .classed("inactive", true)
-      .text("Percentage of Obesity");
+      .text("Obese (%)");
     
     var xageLabel = xlabelsGroup.append("text")
       .attr("x", 0)
-      .attr("y", 60)
+      .attr("y", 80)
       .attr("value", "age") // value to grab for event listener
       .classed("inactive", true)
-      .text("Median Age");
+      .text("Age (Median)");
 
     var xhealthcareLabel = xlabelsGroup.append("text")
       .attr("x", 0)
-      .attr("y", 80)
+      .attr("y", 100)
       .attr("value", "healthcare") // value to grab for event listener
       .classed("inactive", true)
-      .text("Healthcare");
+      .text("Lacks Healthcare (%)");
 
     var xsmokesLabel = xlabelsGroup.append("text")
       .attr("x", 0)
-      .attr("y", 100)
+      .attr("y", 120)
       .attr("value", "smokes") // value to grab for event listener
       .classed("inactive", true)
-      .text("Smokers");
+      .text("Smokes (%)");
     
     // Create group for y-axis labels
     var ylabelsGroup = chartGroup.append("g")
@@ -246,40 +252,47 @@ d3.csv("assets/data/data.csv").then(function(povertyData, err) {
       .attr("transform", "rotate(-90)")
       .attr("dy", "1em")
   
-    var ypovertyLabel = ylabelsGroup.append("text")
+    var yincomeLabel = ylabelsGroup.append("text")
       .attr("y", 20 - margin.left)
+      .attr("x", 0 - (height / 2))
+      .attr("value", "income") // value to grab for event listener
+      .classed("inactive", true)
+      .text("Household Income (Median)");
+    
+    var ypovertyLabel = ylabelsGroup.append("text")
+      .attr("y", 40 - margin.left)
       .attr("x", 0 - (height / 2))
       .attr("value", "poverty") // value to grab for event listener
       .classed("active", true)
-      .text("Poverty Level");
+      .text("In Poverty (%)");
   
     var yobesityLabel = ylabelsGroup.append("text")
-      .attr("y", 40 - margin.left)
+      .attr("y", 60 - margin.left)
       .attr("x", 0 - (height / 2))
       .attr("value", "obesity") // value to grab for event listener
       .classed("inactive", true)
-      .text("Percentage of Obesity");
+      .text("Obese (%)");
     
     var yageLabel = ylabelsGroup.append("text")
-      .attr("y", 60 - margin.left)
+      .attr("y", 80 - margin.left)
       .attr("x", 0 - (height / 2))
       .attr("value", "age") // value to grab for event listener
       .classed("inactive", true)
-      .text("Median Age");
+      .text("Age (Median)");
 
     var yhealthcareLabel = ylabelsGroup.append("text")
-      .attr("y", 80 - margin.left)
+      .attr("y", 100 - margin.left)
       .attr("x", 0 - (height / 2))
       .attr("value", "healthcare") // value to grab for event listener
       .classed("inactive", true)
-      .text("Healthcare");
+      .text("Lacks Healthcare (%)");
 
     var ysmokesLabel = ylabelsGroup.append("text")
-      .attr("y", 100 - margin.left)
+      .attr("y", 120 - margin.left)
       .attr("x", 0 - (height / 2))
       .attr("value", "smokes") // value to grab for event listener
       .classed("inactive", true)
-      .text("Smokers");
+      .text("Smokes (%)");
   
     // append y axis
     // chartGroup.append("text")
