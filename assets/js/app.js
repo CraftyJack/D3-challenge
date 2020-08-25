@@ -123,10 +123,18 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   
     circlesGroup.on("mouseover", function(data) {
       toolTip.show(data);
+      d3.select(this)
+        .transition()
+        .duration(750)
+        .attr("r", 20);
     })
       // onmouseout event
       .on("mouseout", function(data, index) {
         toolTip.hide(data);
+        d3.select(this)
+          .transition()
+          .duration(750)
+          .attr("r", 8);
       });
   
     return circlesGroup;
