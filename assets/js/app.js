@@ -129,7 +129,8 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     }
   
     var toolTip = d3.tip()
-      .attr("class", "tooltip")
+      .attr("class", "d3-tip")
+      .style("display", "block")
       .offset([80, -60])
       .html(function(d) {
         return (`${d.state}<br>${xLabel} ${d[chosenXAxis]}<br>${yLabel} ${d[chosenYAxis]}`);
@@ -191,7 +192,7 @@ d3.csv("assets/data/data.csv").then(function(povertyData, err) {
       .append("circle")
       .attr("cx", d => xLinearScale(d[chosenXAxis]))
       .attr("cy", d => yLinearScale(d[chosenYAxis]))
-      .attr("r", 10)
+      .attr("r", 8)
       .attr("fill", "blue")
       .attr("opacity", ".5");
     
