@@ -76,13 +76,20 @@ function renderYAxis(newYScale, yAxis) {
 
 // function used for updating circles group with a transition to
 // new circles
-function renderCircles(circlesGroup, newXScale, newYScale, chosenXAxis, chosenYAxis) {
+function renderCircles(circlesGroup, circleText, newXScale, newYScale, chosenXAxis, chosenYAxis) {
     circlesGroup.transition()
-        .duration(1000)
-        .attr("cx", d => newXScale(d[chosenXAxis]))
-        .attr("cy", d => newYScale(d[chosenYAxis]))
+      .duration(1000)
+      .attr("cx", d => newXScale(d[chosenXAxis]))
+      .attr("cy", d => newYScale(d[chosenYAxis]))
     ;
+    circleText.transition()
+      .duration(1000)
+      .attr('x', d=> newXScale(d[chosenXAxis]))
+      .attr('y', d=> newYScale(d[chosenYAxis]))
+    ;
+
     return circlesGroup;
+    return circleText;
 }
 
 // function used for updating circles group with new tooltip
@@ -138,7 +145,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
           .classed("stateCircle", true)
           .transition()
           .duration(750)
-          .attr("r", 8);
+          .attr("r", 9);
       });
   
     return circlesGroup;
@@ -187,11 +194,26 @@ d3.csv("assets/data/data.csv").then(function(povertyData, err) {
       .append("circle")
       .attr("cx", d => xLinearScale(d[chosenXAxis]))
       .attr("cy", d => yLinearScale(d[chosenYAxis]))
-      .attr("r", 8)
+      .attr("r", 9)
       .classed("stateCircle", true)
+      .attr('opacity', '.5')
       ;
     
     // circle text
+    var circleText = chartGroup.select('g')
+        .selectAll('circle')
+        .data(povertyData)
+        .enter()
+        .append('text')
+        .text(d => d.abbr)
+        .attr('x', d=> xLinearScale(d[chosenXAxis]))
+        .attr('y', d=> yLinearScale(d[chosenYAxis]))
+        // trial and error brought us here.
+        .attr('dy', -687)
+        .style("font-size", "10px")
+        .style("text-anchor", "middle")
+        .style('fill', 'black')
+        .style('font-familt', 'sans-serif');
   
     // Create group for x-axis labels
     var xlabelsGroup = chartGroup.append("g")
@@ -266,7 +288,7 @@ d3.csv("assets/data/data.csv").then(function(povertyData, err) {
           xAxis = renderXAxis(xLinearScale, xAxis);
           
           // updates circles with new x-y values
-          circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
+          circlesGroup = renderCircles(circlesGroup, circleText, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
   
           // updates tooltips with new info
           circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
@@ -325,7 +347,7 @@ d3.csv("assets/data/data.csv").then(function(povertyData, err) {
           yAxis = renderYAxis(yLinearScale, yAxis);
   
           // updates circles with new x-y values
-          circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
+          circlesGroup = renderCircles(circlesGroup, circleText, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
   
           // updates tooltips with new info
           circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
